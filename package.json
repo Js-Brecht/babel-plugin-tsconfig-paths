@@ -1,0 +1,25 @@
+{
+  "name": "babel-plugin-tsconfig-paths",
+  "version": "1.0.0",
+  "description": "Resolve imports/requires based on paths from tsconfig.json",
+  "main": "./lib/index",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "files": [
+    "lib"
+  ],
+  "author": "Jeremy Albright",
+  "license": "ISC",
+  "peerDependencies": {
+    "@babel/core": "^7.9.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.5.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1"
+  }
+}
