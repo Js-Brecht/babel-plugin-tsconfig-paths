@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    // These are comments... i.e., invalid json
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./src/*"] // More comments
+    }
+    /**
+     * Multiline comments
+     */
+  }
+}

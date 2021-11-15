@@ -1,0 +1,74 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TsConfig Paths Resolver Parses tsconfig with comments: Parses tsconfig with comments 1`] = `
+
+import test from '~/test'
+
+console.log(test)
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+"use strict";
+
+var _test = _interopRequireDefault(require("./test"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+console.log(_test.default);
+
+
+`;
+
+exports[`TsConfig Paths Resolver Performs standard resolutions correctly: Performs standard resolutions correctly 1`] = `
+
+import test from '~/test'
+
+console.log(test)
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+"use strict";
+
+var _test = _interopRequireDefault(require("./test"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+console.log(_test.default);
+
+
+`;
+
+exports[`TsConfig Paths Resolver Resolves aliases of modules with directories of the same name: Resolves aliases of modules with directories of the same name 1`] = `
+
+import test from '~/test'
+import test2 from '~/test2'
+import test3 from '~/test3'
+
+console.log(test)
+console.log(test2)
+console.log(test3)
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+"use strict";
+
+var _test = _interopRequireDefault(require("./test"));
+
+var _index = _interopRequireDefault(require("./test2/index"));
+
+var _test2 = _interopRequireDefault(require("~/test3"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+console.log(_test.default);
+console.log(_index.default);
+console.log(_test2.default);
+
+
+`;
