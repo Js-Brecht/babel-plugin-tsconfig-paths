@@ -46,6 +46,7 @@ exports[`TsConfig Paths Resolver Resolves aliases of modules with directories of
 
 import test from '~/test'
 import test2 from '~/test2'
+// @ts-expect-error this is an invalid import, because test3 doesn't have index
 import test3 from '~/test3'
 
 console.log(test)
@@ -66,6 +67,7 @@ function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
 
+// @ts-expect-error this is an invalid import, because test3 doesn't have index
 console.log(_test.default);
 console.log(_index.default);
 console.log(_test2.default);

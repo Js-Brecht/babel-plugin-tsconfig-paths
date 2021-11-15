@@ -15,6 +15,9 @@
   "peerDependencies": {
     "@babel/core": "^7.9.0"
   },
+  "dependencies": {
+    "jsonc": "^2.0.0"
+  },
   "devDependencies": {
     "@babel/preset-env": "^7.16.0",
     "@babel/preset-typescript": "^7.16.0",
@@ -26,10 +29,6 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
-    "esm": "^3.2.25",
     "jest": "^27.3.1"
-  },
-  "dependencies": {
-    "jsonc": "^2.0.0"
   }
 }
