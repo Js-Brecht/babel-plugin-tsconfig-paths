@@ -10,6 +10,13 @@
     "index.js",
     "lib"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Js-Brecht/gatsby-plugin-tsconfig-paths"
+  },
+  "bugs": {
+    "url": "https://github.com/Js-Brecht/gatsby-plugin-tsconfig-paths/issues"
+  },
   "author": "Jeremy Albright",
   "license": "ISC",
   "peerDependencies": {

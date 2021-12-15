@@ -16,6 +16,7 @@ npm install -D babel-plugin-tsconfig-paths
       "babel-plugin-tsconfig-paths",
       {
         "relative": true,
+        "keepSourceExt": false,
         "extensions": [
           ".js",
           ".jsx",
@@ -49,6 +50,9 @@ npm install -D babel-plugin-tsconfig-paths
 * `relative` : Generate relative paths instead of absolute paths when
   converting aliased import paths.
   * Default: `true`
+
+* `keepSourceExt` : Should the resolved alias maintain the extension of the source file?
+  * Default: `false`
 
 * `extensions` : Which file extensions to resolve.
   * Default: `[".js", ".jsx", ".ts", ".tsx", ".es", ".es6", ".mjs"]`
