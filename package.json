@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-tsconfig-paths",
-  "version": "1.0.3-rc.4",
+  "version": "1.0.3-rc.5",
   "description": "Resolve imports/requires based on paths from tsconfig.json",
   "main": "index",
   "scripts": {
@@ -23,7 +23,7 @@
     "@babel/core": "^7.9.0"
   },
   "dependencies": {
-    "jsonc": "^2.0.0"
+    "json5": "^2.2.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.16.0",
