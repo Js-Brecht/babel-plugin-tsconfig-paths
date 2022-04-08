@@ -19,14 +19,7 @@
   },
   "author": "Jeremy Albright",
   "license": "ISC",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Js-Brecht/babel-plugin-tsconfig-paths"
-  },
   "homepage": "https://github.com/Js-Brecht/babel-plugin-tsconfig-paths",
-  "bugs": {
-    "url": "https://github.com/Js-Brecht/babel-plugin-tsconfig-paths/issues"
-  },
   "peerDependencies": {
     "@babel/core": "^7.9.0"
   },
