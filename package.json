@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-tsconfig-paths",
-  "version": "1.0.2",
+  "version": "1.0.3-rc.6",
   "description": "Resolve imports/requires based on paths from tsconfig.json",
   "main": "index",
   "scripts": {
@@ -10,25 +10,33 @@
     "index.js",
     "lib"
   ],
-  "author": "Jeremy Albright",
-  "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Js-Brecht/babel-plugin-tsconfig-paths"
+    "url": "https://github.com/Js-Brecht/gatsby-plugin-tsconfig-paths"
   },
-  "homepage": "https://github.com/Js-Brecht/babel-plugin-tsconfig-paths",
   "bugs": {
-    "url": "https://github.com/Js-Brecht/babel-plugin-tsconfig-paths/issues"
+    "url": "https://github.com/Js-Brecht/gatsby-plugin-tsconfig-paths/issues"
   },
+  "author": "Jeremy Albright",
+  "license": "ISC",
+  "homepage": "https://github.com/Js-Brecht/babel-plugin-tsconfig-paths",
   "peerDependencies": {
     "@babel/core": "^7.9.0"
   },
+  "dependencies": {
+    "json5": "^2.2.0"
+  },
   "devDependencies": {
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-typescript": "^7.16.0",
+    "babel-jest": "^27.3.1",
+    "babel-plugin-tester": "^10.1.0",
     "eslint": "^7.5.0",
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1"
+    "eslint-plugin-standard": "^4.0.1",
+    "jest": "^27.3.1"
   }
 }
