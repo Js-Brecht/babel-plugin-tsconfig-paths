@@ -62,7 +62,12 @@ const resolvePath = (
       importPath.replace(alias, transformer)
     );
 
-    const resolvedImport = resolveFile(transformedImport, opts);
+    const resolvedImport = resolveFile(transformedImport, {
+      basePath: opts.basePath,
+      strict: true,
+      extensions: opts.extensions,
+      keepSourceExt: opts.keepSourceExt
+    });
 
     // Return the resolved import path
     return !!resolvedImport

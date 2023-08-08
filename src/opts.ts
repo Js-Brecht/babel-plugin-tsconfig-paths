@@ -1,10 +1,13 @@
 import path from "path"
+import fs from "fs";
 import uniq from "lodash/uniq";
+import JSON5 from "json5";
+import type { Simplify } from "type-fest";
 
-import { escapeRegExp, mergeAndMapKeys } from './utils'
-import { getRootDir, getConfigPath, cacheTsPaths } from "./tsconfig";
+import { escapeRegExp, mergeAndMapKeys, resolveFile, getRootDir } from './utils'
+import { getConfigPath, cacheTsPaths, getTsConfig } from "./tsconfig";
 
-import type { PluginOptions, RuntimeOptions } from "./types";
+import type { PluginOptions, ResolverFnOptions, RuntimeOptions } from "./types";
 
 const defaultExtensions: string[] = ['.js', '.jsx', '.ts', '.tsx', '.es', '.es6', '.mjs']
 const transformFunctions: string[] = [
@@ -20,14 +23,15 @@ const transformFunctions: string[] = [
   'require.requireActual',
   'require.requireMock'
 ]
-const defaultOptions = {
+const defaultOptions: RuntimeOptions = {
   aliases: [],
   basePath: process.cwd(),
   configPath: "tsconfig.json",
   extensions: defaultExtensions,
   relative: true,
   transformFunctions: [],
-  skipModuleResolver: false
+  skipModuleResolver: false,
+  keepSourceExt: false,
 }
 const mapOptions = (newOptions: PluginOptions) => ({
   ...mergeAndMapKeys(defaultOptions, newOptions, {
@@ -35,37 +39,27 @@ const mapOptions = (newOptions: PluginOptions) => ({
   }),
 })
 
-const getTsconfigAliases = cacheTsPaths((tsconfig = {
-  compilerOptions: {}
-}) => {
-  const aliases: { [key: string]: string[] } = tsconfig.compilerOptions?.paths || {}
-
-  const resolveAliases: { alias: RegExp, transformers: string[] }[] = []
-
-  Object.entries(aliases).forEach(([alias, resolutions]) => {
-    const newAlias = new RegExp(`^${escapeRegExp(alias).replace(/\*/g, '(.+)')}`)
-    const transformers = resolutions.map((res: string) => {
-      for (let cnt = 1; res.indexOf("*") > -1; cnt++) {
-        res = res.replace("*", `($${cnt})`)
-      }
-      return res
-    })
-    resolveAliases.push({
-      alias: newAlias,
-      transformers
-    })
-  })
-  return resolveAliases
-});
+const getConfigResolverOptions = <
+  O extends ResolverFnOptions,
+  R = Simplify<Omit<O, "strict"> & { strict: O["strict"] extends true ? true : false; }>
+>(options: O): R => ({ strict: false, ...options } as R);
 
 export const getOptions = (inputOpts = {} as PluginOptions): RuntimeOptions => {
   const opts = mapOptions(inputOpts);
 
 
   const rootDir = getRootDir(opts.basePath)
+  const configResolverOptions = getConfigResolverOptions({
+    basePath: rootDir,
+    extensions: ["", "json"],
+    strict: true,
+    keepSourceExt: opts.keepSourceExt,
+  });
+  const tsconfigPath = resolveFile(inputOpts.tsconfig || "tsconfig.json", configResolverOptions);
+  const { tsconfig, aliases } = getTsConfig(tsconfigPath, configResolverOptions)
+
   const configPath = getConfigPath(opts.tsconfig, rootDir)
-  const tsconfig = require(configPath)
-  const base = tsconfig.compilerOptions.baseUrl || ''
+  const base = tsconfig.compilerOptions?.baseUrl || ''
   const basePath = path.isAbsolute(base)
     ? base
     : path.resolve(
@@ -75,10 +69,9 @@ export const getOptions = (inputOpts = {} as PluginOptions): RuntimeOptions => {
   return {
     configPath,
     basePath,
-    aliases: getTsconfigAliases(tsconfig, rootDir),
-    relative: opts.relative || true,
-    // If the original import has an extension, then check for it, too, when
-    // checking for existence of the file
+    aliases,
+    keepSourceExt: opts.keepSourceExt == null ? false : opts.keepSourceExt,
+    relative: opts.relative == null ? true : opts.relative,
     extensions: uniq(['', ...(opts.extensions || defaultExtensions)]),
     transformFunctions: opts.transformFunctions || transformFunctions,
     skipModuleResolver: !base
