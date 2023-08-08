@@ -4,6 +4,7 @@ import { attempt } from "lodash";
 import { Maybe, ResolveFileReducer, ResolverFn, ResolverFnOptions, RuntimeOptions } from "../types";
 import { cacheTransformString } from "./cache";
 import { mergeAndMapKeys } from "./general";
+import type { Simplify } from "type-fest";
 
 /**
  * Retrieves the root directory.
@@ -72,6 +73,11 @@ const resolvers: ResolverFn[] = [
     return tryExtensions(pathname, opts, checkPath);
   },
 ]
+
+export const getConfigResolverOptions = <
+  O extends ResolverFnOptions,
+  R = Simplify<Omit<O, "strict"> & { strict: O["strict"] extends true ? true : false; }>
+>(options: O): R => ({ strict: false, ...options } as R);
 
 type FileResolverRetBase = Maybe<string | Error>;
 type FileResolverRet<O extends ResolverFnOptions> = O["strict"] extends true ? string : FileResolverRetBase;

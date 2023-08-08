@@ -5,7 +5,7 @@ import JSON5 from "json5";
 import type { Simplify } from "type-fest";
 
 import { escapeRegExp, mergeAndMapKeys, resolveFile, getRootDir } from './utils'
-import { getConfigPath, cacheTsPaths, getTsConfig } from "./tsconfig";
+import { getConfigPath, cacheTsPaths, getTsconfig } from "./tsconfig";
 
 import type { PluginOptions, ResolverFnOptions, RuntimeOptions } from "./types";
 
@@ -47,16 +47,15 @@ const getConfigResolverOptions = <
 export const getOptions = (inputOpts = {} as PluginOptions): RuntimeOptions => {
   const opts = mapOptions(inputOpts);
 
-
   const rootDir = getRootDir(opts.basePath)
   const configResolverOptions = getConfigResolverOptions({
     basePath: rootDir,
+    configPath: opts.configPath || "tsconfig.json",
     extensions: ["", "json"],
-    strict: true,
     keepSourceExt: opts.keepSourceExt,
+    strict: true,
   });
-  const tsconfigPath = resolveFile(inputOpts.tsconfig || "tsconfig.json", configResolverOptions);
-  const { tsconfig, aliases } = getTsConfig(tsconfigPath, configResolverOptions)
+  const { tsconfig, aliases } = getTsconfig(configResolverOptions)
 
   const configPath = getConfigPath(opts.tsconfig, rootDir)
   const base = tsconfig.compilerOptions?.baseUrl || ''

@@ -1,8 +1,8 @@
 import path from "path";
 import fs from "fs";
 import JSON5 from "json5";
-import { cacheTransformString, keyedCache } from "./utils";
-import { CachedTsPathsFn, RuntimeOptions, TsConfig, Alias, ResolverFnOptions } from "./types";
+import { cacheTransformString, keyedCache, resolveFile } from "./utils";
+import { CachedTsPathsFn, Tsconfig as Tsconfig, Alias, TsconfigResolverOptions } from "./types";
 import { isCodedError } from "./utils/errors";
 import { escapeRegExp } from "lodash";
 
@@ -29,7 +29,7 @@ export const getConfigPath = cacheTransformString((config = 'tsconfig.json', roo
   return config
 });
 
-const tsConfigCache = new Map<TsConfig, any>();
+const tsConfigCache = new Map<Tsconfig, any>();
 /**
  * Caches the TypeScript paths for a given tsconfig file.
  *
@@ -37,7 +37,7 @@ const tsConfigCache = new Map<TsConfig, any>();
  * @return {TsConfigPaths} - The tsconfig.paths from the tsconfig file.
  */
 export function cacheTsPaths<Fn extends CachedTsPathsFn>(fn: Fn) {
-  return (tsconfig: TsConfig, root: string): ReturnType<Fn> => {
+  return (tsconfig: Tsconfig, root: string): ReturnType<Fn> => {
     const cachedConfig = tsConfigCache.get(tsconfig);
     if (cachedConfig) return cachedConfig;
     const tsconfigPaths = fn(tsconfig, root);
@@ -69,11 +69,21 @@ const getTsconfigAliases = cacheTsPaths((tsconfig = {
   return resolveAliases
 });
 
-export const getTsConfig = keyedCache((tsconfigPath: string, opts: ResolverFnOptions): {
-  tsconfig: TsConfig, aliases: Alias[]
-} => {
+export const getTsconfig = (opts: TsconfigResolverOptions) => {
+  const tsconfigPath = opts.tsconfigPath || path.resolve(opts.basePath || process.cwd(), "tsconfig.json")
+  return _getTsconfig(tsconfigPath, opts)
+}
+
+const _getTsconfig = keyedCache(function resolveTsConfig(tsconfigPath: string, opts: TsconfigResolverOptions): {
+  tsconfig: Tsconfig, aliases: Alias[]
+} {
   try {
-    const rawConfig = fs.readFileSync(tsconfigPath, 'utf-8')
+    const resolvedTsconfigPath = resolveFile(tsconfigPath, {
+      ...opts,
+      basePath: tsconfigPath,
+      strict: true,
+    });
+    const rawConfig = fs.readFileSync(resolvedTsconfigPath, 'utf-8')
     let [err, tsconfig] = JSON5.parse(rawConfig)
     if (err) throw err
 
@@ -85,14 +95,12 @@ export const getTsConfig = keyedCache((tsconfigPath: string, opts: ResolverFnOpt
     }
 
     if (tsconfig.extends) {
-      const extendPath = path.resolve(
-        path.dirname(tsconfigPath),
-        tsconfig.extends
-      )
-
-      const {
-        tsconfig: newTsconfig = {}
-      } = getTsConfig(extendPath, opts) || {}
+      const { tsconfig: newTsconfig = {}
+      } = resolveTsConfig(tsconfig.extends, {
+        ...opts,
+        strict: true,
+        tsconfigPath: path.dirname(resolvedTsconfigPath),
+      }) || {}
 
       tsconfig = {
         ...newTsconfig,

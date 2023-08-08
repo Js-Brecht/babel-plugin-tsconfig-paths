@@ -1,5 +1,5 @@
 import type { ParsedTsconfig } from "typescript";
-import type { Get, TsConfigJson as TsConfig } from "type-fest";
+import type { Get, TsConfigJson as Tsconfig } from "type-fest";
 import { NodePath as CoreNodePath, PluginPass, types } from "@babel/core";
 
 export type Maybe<T, O = undefined | null | void> = T | O;
@@ -56,17 +56,21 @@ export interface ResolvableStringLiteral extends types.StringLiteral {
 
 export interface BabelState extends PluginInstance { }
 
-export type { TsConfig }
+export type { Tsconfig }
 export type TsConfigPaths = Get<ParsedTsconfig, Readonly<["options", "paths"]>, {
   strict: true,
 }>;
-export type CachedTsPathsFn = (tsconfig: TsConfig, root: string) => any;
+export type CachedTsPathsFn = (tsconfig: Tsconfig, root: string) => any;
 
 export type ResolverFnOptions = Pick<RuntimeOptions, "basePath" | "extensions" | "keepSourceExt"> & {
   /** Disallow the resolver from considering null as valid return value */
   strict?: boolean;
   errHandler?: (error: Error) => void;
 }
+export interface TsconfigResolverOptions extends ResolverFnOptions {
+  tsconfigPath?: string;
+}
+
 export type ResolverFn = <O extends ResolverFnOptions>(pathname: string, opts: O) => (
   ResolverFnOptions["strict"] extends true ? string : Maybe<string | Error>
 );
